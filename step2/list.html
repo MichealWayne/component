@@ -1,0 +1,165 @@
+<!doctype html>
+<html>
+<head>
+    <!-- include header -->
+    
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-touch-fullscreen" content="YES" />
+    <script type="text/javascript" src="../lib/zepto.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../lib/common.mobile.css">
+    <title>组件——step2列表</title>
+</head>
+<body>
+    <!-- 主 -->
+    <section class="m-container f-tc">
+        <h1>Hello world</h1>
+        <p>我不是组件，我是主页面。</p>
+    </section>
+
+    <!-- 组件内容 -->
+    <section class="g-mt50 f-tc j-renderCtn">
+        看什么，还没内容呢
+    </section>
+
+    <script type="text/javascript">
+        /*
+        * step2——自定义内容
+        */
+        var testObj = {
+            name: 'Micheal',
+            content: 'This is a component.',
+            btnColor: '#f00'
+        };
+        var reg = /{{(.*)}}/gi;
+
+        // step2-1 变量替换
+        /*$.get('components/test.html', function (htmldata) {
+            var _html = htmldata.replace(reg, function (matches, m1) {
+                var _m1 = m1.trim();
+                return testObj[_m1] || ''
+            });
+            $('.j-renderCtn').html(_html);
+        });*/
+
+        // step2-2 循环列表
+        var reg = /{{(.*)}}/gi;
+        var lsitReg = /{{r-for="(\w*)"}}/gi;
+        var listArr = {
+            list: [
+                { value1: 01, value2: 02, value3: 03, value4: 04, value5: 05 },
+                { value1: 11, value2: 12, value3: 13, value4: 14, value5: 15 },
+                { value1: 21, value2: 22, value3: 23, value4: 24, value5: 25 },
+                { value1: 31, value2: 32, value3: 33, value4: 34, value5: 35 },
+                { value1: 41, value2: 42, value3: 43, value4: 44, value5: 45 },
+                { value1: 51, value2: 52, value3: 53, value4: 54, value5: 55 }
+            ],
+            ularr: ['li1', 'li2', 'li3']
+        }
+
+        /*var getListHtml = function (key, html) {
+            var _reg = new RegExp('{{r-for="' + key + '"}}([\\s\\S*]+?){{r-end}}');
+
+            var _module = html.replace(_reg, function (matches, m1) {
+                var _resultHtml = '';
+                for (var i = 0; i < listArr[key].length; i++) {
+                    _resultHtml += m1.replace(reg, function (_matches, _m1) {
+                        _m1 = _m1.trim();
+                        return (typeof listArr[key][i] == 'object' ? listArr[key][i][_m1] : listArr[key][i]) || ''
+                    });
+                }
+
+                return _resultHtml;
+            });
+
+            return _module;
+        };
+
+        $.get('components/testtable.html', function (htmldata) {
+            var _listKeys = [];
+            htmldata.replace(lsitReg, function (matches, m1) {
+                _listKeys.push(m1);
+            });
+            
+            for (var i in _listKeys) {
+                htmldata = getListHtml(_listKeys[i], htmldata);
+            }
+
+            $('.j-renderCtn').html(htmldata)
+        });*/
+
+
+        /*
+        * @param {Object} options: 组件参数
+        *        {String} options.url: 组件路径；
+        *        {object} options.value: 数据内容；
+        */
+        $.fn.renderComponent = function (options) {
+            if (!options || !options.url) return false;
+
+            var $t = $(this),
+                _value = options.value;
+            var reg = /{{(.*)}}/gi,
+                listReg = /{{r-for="(\w*)"}}/gi;
+
+            // 渲染列表获取html
+            var getListHtml = function (key, html) {    // key列表数组变量，html原html
+                var _reg = new RegExp('{{r-for="' + key + '"}}([\\s\\S*]+?){{r-end}}');
+
+                return html.replace(_reg, function (matches, modulehtml) {
+                    var _resultHtml = '';
+                    for (var i = 0; i < _value[key].length; i++) {
+                        _resultHtml += modulehtml.replace(reg, function (_matches, arritem) {
+                            arritem = arritem.trim();
+                            return (typeof _value[key][i] == 'object' ? _value[key][i][arritem] : _value[key][i]) || ''
+                        });
+                    }
+
+                    return _resultHtml;
+                });
+            };
+            // 请求组件
+            $.get(options.url, function (htmldata) {
+                var _listKeys = [];
+
+                // 替换列表内容
+                htmldata.replace(lsitReg, function (matches, m1) {
+                    _listKeys.push(m1);
+                });
+                
+                for (var i in _listKeys) {
+                    htmldata = getListHtml(_listKeys[i], htmldata);
+                }
+
+                // 替换其他变量
+                htmldata = htmldata.replace(reg, function (matches, m1) {
+                    var _m1 = m1.trim();
+                    return _value[_m1] || '';
+                });
+
+                $t.html(htmldata);
+            });
+        };
+
+        $('.j-renderCtn').renderComponent({
+            url: 'components/testtable.html',
+            value: {
+                name: 'Micheal',
+                content: 'This is a component.',
+                btnColor: '#f00',
+                list: [
+                    { value1: 01, value2: 02, value3: 03, value4: 04, value5: 05 },
+                    { value1: 11, value2: 12, value3: 13, value4: 14, value5: 15 },
+                    { value1: 21, value2: 22, value3: 23, value4: 24, value5: 25 },
+                    { value1: 31, value2: 32, value3: 33, value4: 34, value5: 35 },
+                    { value1: 41, value2: 42, value3: 43, value4: 44, value5: 45 },
+                    { value1: 51, value2: 52, value3: 53, value4: 54, value5: 55 }
+                ],
+                ularr: ['li1', 'li2', 'li3']
+            }
+        });
+    </script>
+</body>
+</html>

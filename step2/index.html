@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+    <!-- include header -->
+    
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-touch-fullscreen" content="YES" />
+    <script type="text/javascript" src="../lib/zepto.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../lib/common.mobile.css">
+    <title>组件——step2变量</title>
+</head>
+<body>
+    <!-- 主 -->
+    <section class="m-container f-tc">
+        <h1>Hello world</h1>
+        <p>我不是组件，我是主页面。</p>
+    </section>
+
+    <!-- 组件内容 -->
+    <section class="g-mt50 f-tc j-renderCtn">
+        看什么，还没内容呢
+    </section>
+
+    <script type="text/javascript">
+        /*
+        * step2——自定义内容
+        */
+        var testObj = {
+            name: 'Micheal',
+            content: 'This is a component.',
+            btnColor: '#f00'
+        };
+        var reg = /{{(.*)}}/gi;
+
+        // step2-1 变量替换
+        $.get('components/test.html', function (htmldata) {
+            var _html = htmldata.replace(reg, function (matches, m1) {
+                var _m1 = m1.trim();
+                return testObj[_m1] || ''
+            });
+            $('.j-renderCtn').html(_html);
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,349 @@
+/* @charset "utf-8" */
+
+/*
+*	reset and common(mobile)
+*   update time: 2017.04.18
+*	author: Micheal Wang
+*/
+/*reset*/
+html,
+body,
+h1,h2,h3,h4,h5,h6,nav,
+div,header,article,aside,section,footer,
+audio,
+canvas,
+dl,dt,dd,
+ul,ol,li,
+p,
+blockquote,
+pre,
+hr,
+figure,
+iframe,
+table,caption,th,td,
+form,fieldset,legend,input,button,textarea,
+option,select,
+menu{
+	margin: 0;
+	padding: 0;
+	border: 0;
+    outline: 0;
+	-webkit-touch-callout:none;
+	-moz-touch-callout:none;
+	-ms-touch-callout:none;
+	touch-callout:none;
+}
+
+header,footer,section,article,aside,nav,hgroup,address,figure,figcaption,menu,details{
+	display: block;
+}
+table{
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+caption,th{
+	text-align: left;
+	font-weight: normal;
+}
+ul,li{
+	list-style:none;
+}
+h1,h2,h3,h4,h5,h6,strong,b{
+	font-weight:bold;
+}
+address,caption,cite,code,dfn,em,var{
+    font-style: normal;
+    font-weight: normal;
+}
+a,a:hover {
+    text-decoration: none;
+}
+q:before,q:after {
+    content: '';
+}
+
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+button,input[type="button"],input[type="reset"],input[type="submit"] {
+    cursor: pointer;
+    -webkit-appearance: button;
+    *overflow: visible
+}
+input[type="checkbox"],input[type="radio"] {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 0;
+}
+input[type="search"] {
+    -webkit-appearance: textfield;
+    -webkit-box-sizing: content-box;
+    box-sizing: content-box;
+}
+input[type="search"]::-webkit-search-decoration {
+    -webkit-appearance: none
+}
+
+
+body{
+	font-size: 14px;
+	line-height: 20px;
+	color: #333;
+	font-family: 'PingFangSC-Regular', 'PingFangSC', 'HeitiSC', 'Helvetica', 'Microsoft Yahei', 'DroidSans', sans-serif;
+}
+/*function style*/
+.f-clearFix{*zoom:1;}
+.f-clearFix:after{
+	content: '.';
+	height: 0;
+	clear: both;
+	visibility: hidden;
+	display: block;
+}
+.f-ovhidden{
+	overflow: hidden;
+}
+.f-wk_reset{
+	-webkit-appearance: none;
+}
+.f-ellipsis{
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	-o-text-overflow: ellipsis;
+	overflow:hidden;
+}
+.f-bdr10{
+	border-radius: 5px;
+}
+.f-fl{
+	float: left;
+	display: inline;
+}
+.f-fr{
+	float: right;
+	display: inline;
+}
+.f-tc{
+	text-align: center;
+}
+.f-tl{
+	text-align: left;
+}
+.f-tr{
+	text-align: right;
+}
+.f-tm{
+	vertical-align: middle;
+}
+.f-tt{
+	vertical-align: top;
+}
+.f-tb{
+	vertical-align: middle;
+}
+.f-bold{
+	font-weight: bold;
+}
+
+/*layout*/
+.g-center{
+	margin-left: auto;
+	margin-right: auto;
+}
+.g-box_b{
+	-webkit-box-sizing: border-box;
+            box-sizing: border-box;
+}
+.g-box_c{
+	-webkit-box-sizing: content-box;
+            box-sizing: content-box;
+}
+.g-pr{
+	position: relative;
+}
+.g-pa{
+	position: absolute;
+}
+
+/*width-height*/
+.u-block, .u-icon, em.u-icon{
+	display: block;
+}
+.u-block_il, .u-icon_il, em.u-icon_il{
+	display: inline-block;
+}
+.u-inline{
+	display: inline;
+}
+.u-w100{
+	display: block;
+	width: 100%;
+}
+.u-w92{
+	display: block;
+	width: 92%;
+}
+.u-h100{
+	height: 100%;
+	overflow: scroll;
+}
+.u-pl4{
+	padding-left: 4%;
+}
+.u-pr4{
+	padding-right: 4%;
+}
+
+/*display status*/
+.z-hide{
+	display: none!important;
+}
+.z-hide_50{
+	filter: alpha(opacity=50);
+    -khtml-opacity: 0.5;
+	  -moz-opacity: 0.5;  
+	       opacity: 0.5;
+}
+.z-hide_60{
+	filter: alpha(opacity=60);
+    -khtml-opacity: 0.6;
+	  -moz-opacity: 0.6;  
+	       opacity: 0.6;
+}
+.z-hide_20{
+	filter: alpha(opacity=20);
+    -khtml-opacity: 0.2;
+	  -moz-opacity: 0.2;  
+	       opacity: 0.2;
+}
+
+/*buttons*/
+.u-btn{
+	display: block;
+	padding: 0;
+	text-align: center;
+	cursor: pointer;
+	border-radius: 4px;
+}
+.u-btn:hover{
+	text-decoration: none;
+}
+.btn_yellow{
+	background-color: #f1ae3f;
+	color: #fff;
+}
+.btn_orange{
+	background-color: #FF8F2E;
+	color: #fff;
+}
+.btn_red{
+	background-color: #cf0e0f;
+	color: #fff;
+}
+.btn_gray{
+	background-color: #ccc;
+	color: #aaa;
+}
+.btn-bd_gray{
+	border: thin solid #999;
+	color: #999;
+}
+.btn-bd_white{
+	border: thin solid #fff;
+	color: #fff;
+}
+
+/*flex*/
+.u-flex {
+    display: -webkit-box;
+    display: -moz-box;
+    display: box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+}
+.f-justify {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-pack: justify;
+    box-pack: justify;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-align: center;
+    box-align: center;
+}
+.u-l-middle {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+}
+.u-c-middle {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+}
+.u-j-middle {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+}
+.u-e-middle {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    -webkit-justify-content: flex-end;
+    justify-content: flex-end;
+}
+
+
+.g-mt50{
+    margin-top: 50px;
+}
+.m-container .u-btn{
+    width: 60%;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 20px;
+}
+.m-container{
+    padding: 50px;
+    border-bottom: 1px solid #ccc;
+}

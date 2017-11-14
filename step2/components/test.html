@@ -1,0 +1,23 @@
+<!-- 变量组件 step2 -->
+<style>
+    .m-t_tit{
+        text-decoration: underline;
+        color: #09f;
+    }
+    .m-t_btn{
+        width: 50%;
+        height: 30px;
+        line-height: 30px;
+        background-color: {{btnColor}}
+    }
+</style>
+
+<p class="m-t_tit">看到了没，我是{{name}}</p>
+<p>{{content}}</p>
+<button class="u-btn btn_yellow m-t_btn g-center">点击</button>
+
+<script type="text/javascript">
+    $('.m-t_btn').on('click', function () {
+        alert('你点了组件里的按钮，并且content是{{content}}');
+    });
+</script>
