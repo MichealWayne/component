@@ -1,0 +1,247 @@
+<!doctype html>
+<html>
+<head>
+    <!-- include header -->
+    
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-touch-fullscreen" content="YES" />
+    <script type="text/javascript" src="../lib/zepto.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../lib/common.mobile.css">
+    <title>组件——step3 css私有</title>
+</head>
+<body>
+    <!-- 主 -->
+    <section class="m-container f-tc">
+        <h1>Hello world</h1>
+        <p>我不是组件，我是主页面。</p>
+    </section>
+	
+	<!-- 看看是否受组件影响 -->
+	<section class="f-tc">
+		<table class="m-table">
+			<thead>
+				<tr>
+					<th>title1</th>
+					<th>title2</th>
+					<th>title3</th>
+					<th>title4</th>
+					<th>title5</th>
+				</tr>
+			</thead>
+			<tbody>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>5</td>
+			</tbody>
+		</table>
+	</section>
+	
+    <!-- 组件内容 -->
+    <section class="g-mt50 f-tc j-renderCtn">
+        看什么，还没内容呢
+    </section>
+	
+	<script type="text/javascript">
+            var Regs = {
+                variable: /{{(\w*)}}/g,
+                list: /{{r-for="(\w*)"}}/g,
+                css: /<style>(([\s\S])*?)<\/style>/,
+                cssPrivate: /<style\s+private>(([\s\S])*?)<\/style>/
+            };
+            
+            // remove 2+ space and line break
+            // @return {String} worked string
+            var removeSpaceAndLinebreak = function (str) {
+                return str.replace(/(^\s*)|(\s*$)/g, '').replace(/\s\s/g, '').replace(/<\/?.+?>/g, '').replace(/[\r\n\t]/g, '');
+            };
+            
+            // get random attribute
+            // @return {String} attribute
+            var getRandomAttr = function () {
+                return 'data-r' + Math.random().toString(36).substr(2, 8);
+            };
+
+            // scaner
+            function Scaner () {
+                this.index = 0;
+                this.status = 'off';
+            }
+
+            Scaner.prototype = {
+                // end of scan
+                end: function (callback) {
+                    this.index = 0;
+                    this.status = 'off';
+
+                    if (callback) callback();
+                },
+                // css scan
+                // @param {Object} config:
+                //        {Functon} handleStyle: selector and content function;
+                //        {Function} callback: callback
+                doCssScan: function (config) {
+                    var THIS = this;
+                    var result = {
+                        'selector': '',
+                        'content': ''
+                    };
+                    var cssdata = removeSpaceAndLinebreak(config.data),
+                        _length = cssdata.length;
+
+                    THIS.status = 'selector';
+                    for (THIS.index = 0; THIS.index < _length; THIS.index++ ) {
+                        var _data = cssdata[THIS.index],
+                            _status = THIS.status;
+
+                        if (_data === '{' && !~cssdata.slice(THIS.index - 1, THIS.index + 2).indexOf('{{') || _data === '}' && !~cssdata.slice(THIS.index - 1, THIS.index + 2).indexOf('}}')) {
+                            THIS.status = _status === 'selector' ? 'content' : 'selector';
+                        } else if (!(!result[THIS.status] && _data == ' ')) result[THIS.status] += cssdata[THIS.index];
+
+                        if (THIS.status !== _status && _status === 'content') {
+                            if (config.handleStyle) config.handleStyle(result);
+
+                            result.selector = '';
+                            result.content = '';
+                        } 
+                    }
+
+                    THIS.end(config.callback);
+                }
+            };
+
+            var componentScaner = new Scaner();
+            componentScaner.doCssScan({
+                data: `
+                    .m-table{
+        width: 100%;
+    }
+    .m-table th, .m-table td{
+        height: 40px;
+        line-height: 40px;
+        color: {{btnColor}};
+        font-weight: bold;
+    }
+    .m-t_tit{
+        text-decoration: underline;
+        color: #09f;
+    }
+                `,
+                handleStyle: function (data) {console.log(data)}
+            })
+            
+            $.fn.renderComponent = function (options) {
+                if (!options || !options.url) return false;
+
+                var $t = $(this),
+                    _value = options.value,
+                    privateAttr = getRandomAttr();
+
+                // 渲染列表获取html
+                var getListHtml = function (key, html) {    // key列表数组变量，html原html
+                    var _reg = new RegExp('{{r-for="' + key + '"}}([\\s\\S*]+?){{r-end}}');
+
+                    return html.replace(_reg, function (matches, modulehtml) {
+                        var _resultHtml = '';
+                        for (var i = 0; i < _value[key].length; i++) {
+                            _resultHtml += modulehtml.replace(Regs.variable, function (_matches, arritem) {
+                                arritem = arritem.trim();
+                                return (typeof _value[key][i] == 'object' ? _value[key][i][arritem] : _value[key][i]) || ''
+                            });
+                        }
+
+                        return _resultHtml;
+                    });
+                };
+                
+                // 处理css
+                var getCssHtml = function (html) {
+                    var cssHtml = '',
+                        cssPrivateHtml = '';
+                    
+                    // 普通css
+                    html = html.replace(Regs.css, function (ms, cssdata) {
+                        if (cssdata) cssHtml = removeSpaceAndLinebreak(cssdata);
+                        
+                        return '';
+                    });
+                    
+                    // 私有css
+                    html = html.replace(Regs.cssPrivate, function (ms, cssdata) {
+                        if (cssdata) {
+                            componentScaner.doCssScan({
+                                data: cssdata,
+                                handleStyle: function (data) {
+                                    var _data = ('[' + privateAttr + '] ' + data.selector).replace(',', ',[' + privateAttr + '] ');
+                                    cssdata = cssdata.replace(data, _data);
+                                },
+                                callback: function () {
+                                    cssPrivateHtml = cssdata;
+                                }
+                            });
+                        }
+                        
+                        return ''
+                    });
+                    
+                    return [html, cssHtml, cssPrivateHtml];
+                };
+                
+                // 请求组件
+                $.get(options.url, function (htmldata) {
+                    var _listKeys = [];
+
+                    // 替换列表内容
+                    htmldata.replace(Regs.list, function (matches, m1) {
+                        _listKeys.push(m1);
+                    });
+                    
+                    for (var i in _listKeys) {
+                        htmldata = getListHtml(_listKeys[i], htmldata);
+                    }
+
+                    // 替换其他变量
+                    htmldata = htmldata.replace(Regs.variable, function (matches, m1) {
+                        var _m1 = m1.trim();
+                        return _value[_m1] || '';
+                    });
+                    
+                    // 处理css
+                    var result = getCssHtml(htmldata);
+                    
+                    // final dom
+                    $('head').append('<style>' + result[1] + result[2] + '<\/style>');
+                    if (result[2]) $t.attr(privateAttr, privateAttr).html(result[0]);
+                    else $t.html(result[0]);
+                });
+            };   
+    </script>
+    <script type="text/javascript">
+        /*
+        * step3-CSS私有与公有
+        */
+		
+		$('.j-renderCtn').renderComponent({
+            url: 'components/test.html',
+            value: {
+                name: 'Micheal',
+                content: 'This is a component.',
+                btnColor: '#f00',
+                list: [
+                    { value1: 01, value2: 02, value3: 03, value4: 04, value5: 05 },
+                    { value1: 11, value2: 12, value3: 13, value4: 14, value5: 15 },
+                    { value1: 21, value2: 22, value3: 23, value4: 24, value5: 25 },
+                    { value1: 31, value2: 32, value3: 33, value4: 34, value5: 35 },
+                    { value1: 41, value2: 42, value3: 43, value4: 44, value5: 45 },
+                    { value1: 51, value2: 52, value3: 53, value4: 54, value5: 55 }
+                ],
+                ularr: ['li1', 'li2', 'li3']
+            }
+        });
+    </script>
+</body>
+</html>

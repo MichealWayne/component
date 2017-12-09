@@ -1,0 +1,62 @@
+<!-- 变量组件 step2 -->
+<style>
+	.m-table{
+		background: #666;
+	}
+    .m-table td{
+        border: 1px #fff solid;
+    }
+</style>
+<style private>
+    .m-table{
+        width: 100%;
+    }
+	.m-table th, .m-table td{
+        height: 40px;
+        line-height: 40px;
+		color: {{btnColor}};
+		font-weight: bold;
+	}
+	.m-t_tit{
+        text-decoration: underline;
+        color: #09f;
+    }
+    .m-t_btn{
+        width: 50%;
+        height: 30px;
+        line-height: 30px;
+        background-color: {{btnColor}}
+    }
+</style>
+
+<p class="m-t_tit">看到了没，我是{{name}}</p>
+<p>{{content}}</p>
+<button class="u-btn btn_yellow m-t_btn g-center" onclick="ralert('{{content}}')">点击</button>
+<table class="m-table">
+    <thead>
+        <tr>
+            <th>title1</th>
+            <th>title2</th>
+            <th>title3</th>
+            <th>title4</th>
+            <th>title5</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{r-for="list"}}
+        <tr>
+            <td>{{value1}}</td>
+            <td>{{value2}}</td>
+            <td>{{value3}}</td>
+            <td>{{value4}}</td>
+            <td>{{value5}}</td>
+        </tr>
+        {{r-end}}
+    </tbody>
+</table>
+
+<script>
+    function ralert (ctn) {
+        alert('你点了组件里的按钮，并且content是' + ctn);
+    }
+</script>
